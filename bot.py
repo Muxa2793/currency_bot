@@ -2,7 +2,7 @@ import logging
 import settings
 import yfinance as yf
 from datetime import datetime
-from db import db, get_currency
+from db import db, get_financial_asset
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 from telegram import ReplyKeyboardMarkup
 
@@ -33,28 +33,30 @@ def currency_price_command(update, context):
         update.message.reply_text('Что вы хотите узнать?',
                                   reply_markup=main_keyboard())
     if update.message.text in currency_list:
-        update.message.reply_text(currency_price(update.message.text))
+        user_currency = update.message.text
+        currency = currency_transfer(update.message.text)
+        value = get_financial_assets(currency)['value']
+        value = round(value, 2)
+        date = get_financial_assets(currency)['date']
+        update.message.reply_text(f'{user_currency}: {value} руб. на {date}')
 
 
-def currency_price(currency):
-    if currency == 'USD':
-        current_currency = 'USDRUB=X'
-        price = yf.download(current_currency,
-                            datetime.now().date())['Close'][0]
-        # price = round(price, 2)
-        date = datetime.now()
-        date = date.strftime("%d-%m-%Y %H:%M")
-        currency_db = get_currency(db, date, price, current_currency)
-        return f'{currency}: {price}'
-    elif currency == 'EUR':
-        current_currency = 'EURRUB=X'
-        price = yf.download(current_currency,
-                            datetime.now().date())['Close'][0]
-        # price = round(price, 2)
-        date = datetime.now()
-        date = date.strftime("%d-%m-%Y %H:%M")
-        currency_db = get_currency(db, date, price, current_currency)
-        return f'{currency}: {price}'
+def currency_transfer(user_currency):
+    if user_currency == 'USD':
+        currency_transfer = 'USDRUB=X'
+    elif user_currency == 'EUR':
+        currency_transfer = 'EURRUB=X'
+    return currency_transfer
+
+
+def get_financial_assets(financial_asset):
+    price = yf.download(financial_asset,
+                        datetime.now().date())['Close'][-1]
+    # price = round(price, 2)
+    date = datetime.now()
+    date = date.strftime("%d.%m.%Y %H:%M")
+    financial_asset_db = get_financial_asset(db, date, price, financial_asset)
+    return financial_asset_db
 
 
 def currency_keyboard():
