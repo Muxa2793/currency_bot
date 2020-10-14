@@ -24,7 +24,7 @@ def greet_user(update, context):
     )
 
 
-def currency_price_command(update, context):
+def currency_price(update, context):
     currency_list = ['USD', 'EUR']
     if update.message.text == 'Валюта':
         update.message.reply_text('Выберите валюту',
@@ -35,9 +35,10 @@ def currency_price_command(update, context):
     if update.message.text in currency_list:
         user_currency = update.message.text
         currency = currency_transfer(update.message.text)
-        value = get_financial_assets(currency)['value']
-        value = round(value, 2)
-        date = get_financial_assets(currency)['date']
+        financial_asset_db = get_financial_assets(currency)
+        value = financial_asset_db['value']
+        value = round(value, 3)
+        date = financial_asset_db['date']
         update.message.reply_text(f'{user_currency}: {value} руб. на {date}')
 
 
@@ -50,10 +51,8 @@ def currency_transfer(user_currency):
 
 
 def get_financial_assets(financial_asset):
-    price = yf.download(financial_asset,
-                        datetime.now().date())['Close'][-1]
-    # price = round(price, 2)
     date = datetime.now()
+    price = yf.download(financial_asset, date)['Close'][-1]
     date = date.strftime("%d.%m.%Y %H:%M")
     financial_asset_db = get_financial_asset(db, date, price, financial_asset)
     return financial_asset_db
@@ -75,7 +74,7 @@ def main():
     mybot = Updater(settings.API_KEY, use_context=True, request_kwargs=PROXY)
     dp = mybot.dispatcher
     dp.add_handler(CommandHandler("start", greet_user))
-    dp.add_handler(MessageHandler(Filters.text, currency_price_command))
+    dp.add_handler(MessageHandler(Filters.text, currency_price))
     logging.info("Бот стартовал")
     mybot.start_polling()
     mybot.idle()

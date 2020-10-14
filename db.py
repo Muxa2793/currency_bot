@@ -19,8 +19,7 @@ def get_financial_asset(db, date, price, financial_asset):
         elif currency_db:
             db.currency.update_one(
                 {'_id': currency_db['_id']},
-                {'$set': {'value': price, 'date': date}},
-            )
+                {'$set': {'value': price, 'date': date}})
         return currency_db
     elif stocks_db:  # проверка базы акций
         pass
