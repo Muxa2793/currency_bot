@@ -2,7 +2,8 @@ import logging
 import settings
 import yfinance as yf
 from datetime import datetime
-from db import db, get_financial_asset
+from db import db, get_financial_asset_db
+from tasks import run_scheduler
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 from telegram import ReplyKeyboardMarkup
 
@@ -37,7 +38,7 @@ def currency_price(update, context):
         currency = currency_transfer(update.message.text)
         financial_asset_db = get_financial_assets(currency)
         value = financial_asset_db['value']
-        value = round(value, 3)
+        # value = round(value, 3)
         date = financial_asset_db['date']
         update.message.reply_text(f'{user_currency}: {value} руб. на {date}')
 
@@ -54,7 +55,8 @@ def get_financial_assets(financial_asset):
     date = datetime.now()
     price = yf.download(financial_asset, date)['Close'][-1]
     date = date.strftime("%d.%m.%Y %H:%M")
-    financial_asset_db = get_financial_asset(db, date, price, financial_asset)
+    financial_asset_db = get_financial_asset_db(db, date, price,
+                                                financial_asset)
     return financial_asset_db
 
 
@@ -82,3 +84,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    run_scheduler()

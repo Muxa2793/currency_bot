@@ -5,7 +5,7 @@ client = MongoClient(settings.MONGO_LINK)
 db = client[settings.MONGO_DB]
 
 
-def get_financial_asset(db, date, price, financial_asset):
+def get_financial_asset_db(db, date, price, financial_asset):
     currency_db = db.currency.find_one({"currency": financial_asset})
     stocks_db = db.stocks.find_one({"stocks": financial_asset})
     if currency_db:
