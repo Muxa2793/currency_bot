@@ -1,8 +1,7 @@
 import logging
 import settings
-import yfinance as yf
-from datetime import datetime
-from db import db, get_financial_asset
+
+from jobs import get_financial_assets
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 from telegram import ReplyKeyboardMarkup
 
@@ -23,7 +22,7 @@ def greet_user(update, context):
       reply_markup=main_keyboard()
     )
 
-
+'''
 def currency_price(update, context):
     currency_list = ['USD', 'EUR']
     if update.message.text == 'Валюта':
@@ -40,7 +39,7 @@ def currency_price(update, context):
         value = round(value, 3)
         date = financial_asset_db['date']
         update.message.reply_text(f'{user_currency}: {value} руб. на {date}')
-
+'''
 
 def currency_transfer(user_currency):
     if user_currency == 'USD':
@@ -48,14 +47,6 @@ def currency_transfer(user_currency):
     elif user_currency == 'EUR':
         currency_transfer = 'EURRUB=X'
     return currency_transfer
-
-
-def get_financial_assets(financial_asset):
-    date = datetime.now()
-    price = yf.download(financial_asset, date)['Close'][-1]
-    date = date.strftime("%d.%m.%Y %H:%M")
-    financial_asset_db = get_financial_asset(db, date, price, financial_asset)
-    return financial_asset_db
 
 
 def currency_keyboard():
@@ -72,9 +63,13 @@ def main_keyboard():
 
 def main():
     mybot = Updater(settings.API_KEY, use_context=True, request_kwargs=PROXY)
+
+    jq = mybot.job_queue
+    jq.run_repeating(get_financial_assets, interval=60, first=0)
+
     dp = mybot.dispatcher
     dp.add_handler(CommandHandler("start", greet_user))
-    dp.add_handler(MessageHandler(Filters.text, currency_price))
+    # dp.add_handler(MessageHandler(Filters.text, currency_price))
     logging.info("Бот стартовал")
     mybot.start_polling()
     mybot.idle()
