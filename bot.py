@@ -1,64 +1,16 @@
 import logging
 import settings
 
+from handlers import greet_user, get_currency_price, choose_currency, currency_db_dontknow
 from jobs import get_financial_assets
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
-from telegram import ReplyKeyboardMarkup
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, ConversationHandler, CallbackQueryHandler
+from user_settings import user_settings_start, user_settings_dontknow, user_settings_currency, user_settings_set_asset
 
 PROXY = {'proxy_url': settings.PROXY_URL, 'urllib3_proxy_kwargs': {
                                 'username': settings.PROXY_USERNAME,
                                 'password': settings.PROXY_PASSWORD}}
 
 logging.basicConfig(filename='bot.log', level=logging.INFO)
-
-
-def greet_user(update, context):
-    logging.info('Вызван /start')
-    update.message.reply_text(
-      'Привет, пользователь! Ты вызвал команду /start.\n'
-      'Это бот, который покажет интересующие тебя курсы валют,'
-      'акций и криптовалют.\n'
-      'Также в нём скоро появятся другие крутые фишки.',
-      reply_markup=main_keyboard()
-    )
-
-'''
-def currency_price(update, context):
-    currency_list = ['USD', 'EUR']
-    if update.message.text == 'Валюта':
-        update.message.reply_text('Выберите валюту',
-                                  reply_markup=currency_keyboard())
-    if update.message.text == 'Вернуться':
-        update.message.reply_text('Что вы хотите узнать?',
-                                  reply_markup=main_keyboard())
-    if update.message.text in currency_list:
-        user_currency = update.message.text
-        currency = currency_transfer(update.message.text)
-        financial_asset_db = get_financial_assets(currency)
-        value = financial_asset_db['value']
-        value = round(value, 3)
-        date = financial_asset_db['date']
-        update.message.reply_text(f'{user_currency}: {value} руб. на {date}')
-'''
-
-def currency_transfer(user_currency):
-    if user_currency == 'USD':
-        currency_transfer = 'USDRUB=X'
-    elif user_currency == 'EUR':
-        currency_transfer = 'EURRUB=X'
-    return currency_transfer
-
-
-def currency_keyboard():
-    return ReplyKeyboardMarkup([
-                                ['USD', 'EUR'],
-                                ['Вернуться']], resize_keyboard=True)
-
-
-def main_keyboard():
-    return ReplyKeyboardMarkup([
-                                ['/stoks', 'Валюта', "/crypto"],
-                                ['/start']], resize_keyboard=True)
 
 
 def main():
@@ -68,8 +20,37 @@ def main():
     jq.run_repeating(get_financial_assets, interval=60, first=0)
 
     dp = mybot.dispatcher
+
+    user_settings = ConversationHandler(
+        entry_points=[
+            CommandHandler('settings', user_settings_start)
+        ],
+        states={
+            'set_asset': [MessageHandler(Filters.text, user_settings_set_asset)],
+            'currency': [CallbackQueryHandler(user_settings_currency)]
+        },
+        fallbacks=[
+            MessageHandler(Filters.text | Filters.photo | Filters.video | Filters.location | Filters.document,
+                           user_settings_dontknow)
+        ]
+    )
+
+    currency_db = ConversationHandler(
+        entry_points=[
+            MessageHandler(Filters.regex('^(Валюта)$'), choose_currency)
+        ],
+        states={
+            'currency_price': [MessageHandler(Filters.text, get_currency_price)]
+        },
+        fallbacks=[
+            MessageHandler(Filters.text | Filters.photo | Filters.video | Filters.location | Filters.document,
+                           currency_db_dontknow)
+        ]
+    )
+
+    dp.add_handler(user_settings)
+    dp.add_handler(currency_db)
     dp.add_handler(CommandHandler("start", greet_user))
-    # dp.add_handler(MessageHandler(Filters.text, currency_price))
     logging.info("Бот стартовал")
     mybot.start_polling()
     mybot.idle()

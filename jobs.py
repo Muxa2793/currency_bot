@@ -1,12 +1,13 @@
 from datetime import datetime
 from db import db, get_financial_currency, get_financial_stocks
+from settings import CURRENCY_LIST
 
 import yfinance as yf
 
 
 def get_financial_assets(context):
-    date_str = datetime.now().strftime("%d.%m.%Y %H:%M:%S")   
-    financial_assets = {'currency': ['USDRUB=X', 'EURRUB=X'], 'stock': ['YNDX']}
+    date_str = datetime.now().strftime("%d.%m.%Y %H:%M:%S")
+    financial_assets = {'currency': CURRENCY_LIST, 'stock': ['YNDX']}
     for assets in financial_assets:
         if assets == 'currency':
             for asset in financial_assets['currency']:

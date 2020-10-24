@@ -5,6 +5,27 @@ client = MongoClient(settings.MONGO_LINK)
 db = client[settings.MONGO_DB]
 
 
+def get_or_create_user(db, effective_user, chat_id):
+    user = db.users.find_one({'user_id': effective_user.id})
+    if not user:
+        user = {
+            'user_id': effective_user.id,
+            'firs_name': effective_user.first_name,
+            'last_name': effective_user.last_name,
+            'username': effective_user.username,
+            'chat_id': chat_id
+        }
+        db.users.insert_one(user)
+
+
+def create_currency_list(db, effective_user, currency_list):
+    user = db.users.find_one({'user_id': effective_user.id})
+    if user:
+        db.users.update_one(
+            {'_id': user['_id']},
+            {'$set': {'currency_list': currency_list}})
+
+
 def get_financial_currency(db, date, price, asset):
     currency_db = db.currency.find_one({"currency": asset})
     if currency_db is None:
@@ -35,3 +56,13 @@ def get_financial_stocks(db, date, price, asset):
             {'_id': stocks_db['_id']},
             {'$set': {'value': price, 'date': date}})
     return stocks_db
+
+
+def get_user_currency_keyboard(db, effective_user):
+    user = db.users.find_one({'user_id': effective_user.id})
+    return user['currency_list']
+
+
+def find_currency_value(db, asset):
+    currency_db = db.currency.find_one({"currency": asset})
+    return currency_db
