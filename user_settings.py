@@ -15,16 +15,20 @@ def user_settings_start(update, context):
 def user_settings_set_asset(update, context):
     user_text = update.message.text
     if user_text == 'Валюта':
-        keyboard = [[
-                    InlineKeyboardButton("USD", callback_data='USDRUB=X'),
-                    InlineKeyboardButton("EUR", callback_data='EURRUB=X')],
-                    [
-                    InlineKeyboardButton("JPY", callback_data='JPYRUB=X'),
-                    InlineKeyboardButton("GBP", callback_data='GBPRUB=X')],
-                    [
-                    InlineKeyboardButton("CNY", callback_data='CNYRUB=X'),
-                    InlineKeyboardButton("Выйти", callback_data='Выйти')]
-                    ]
+        keyboard = [
+            [
+                InlineKeyboardButton("USD", callback_data='USD'),
+                InlineKeyboardButton("EUR", callback_data='EUR')
+            ],
+            [
+                InlineKeyboardButton("JPY", callback_data='JPY'),
+                InlineKeyboardButton("GBP", callback_data='GBP')
+            ],
+            [
+                InlineKeyboardButton("CNY", callback_data='CNY'),
+                InlineKeyboardButton("Выйти", callback_data='Выйти')
+            ]
+        ]
         currency_keyboard = InlineKeyboardMarkup(keyboard)
         update.message.reply_text('Выберете валюту:', reply_markup=currency_keyboard)
         context.user_data['asset'] = {'currency': []}

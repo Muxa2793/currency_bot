@@ -10,12 +10,13 @@ def get_or_create_user(db, effective_user, chat_id):
     if not user:
         user = {
             'user_id': effective_user.id,
-            'firs_name': effective_user.first_name,
+            'first_name': effective_user.first_name,
             'last_name': effective_user.last_name,
             'username': effective_user.username,
             'chat_id': chat_id
         }
         db.users.insert_one(user)
+    return user
 
 
 def create_currency_list(db, effective_user, currency_list):
@@ -28,7 +29,7 @@ def create_currency_list(db, effective_user, currency_list):
 
 def get_financial_currency(db, date, price, asset):
     currency_db = db.currency.find_one({"currency": asset})
-    if currency_db is None:
+    if not currency_db:
         currency_db = {
             "currency": asset,
             "value": price,
@@ -44,7 +45,7 @@ def get_financial_currency(db, date, price, asset):
 
 def get_financial_stocks(db, date, price, asset):
     stocks_db = db.stocks.find_one({"stock": asset})
-    if stocks_db is None:
+    if not stocks_db:
         stocks_db = {
             "stock": asset,
             "value": price,
@@ -66,3 +67,11 @@ def get_user_currency_keyboard(db, effective_user):
 def find_currency_value(db, asset):
     currency_db = db.currency.find_one({"currency": asset})
     return currency_db
+
+
+def create_notifications_settings(db, effective_user, asset, value):
+    user = db.users.find_one({'user_id': effective_user.id})
+    if user:
+        db.users.update_one(
+            {'_id': user['_id']},
+            {'$set': {'notification_settings': {'asset': f'{asset}RUB=X', 'notification_value': value}}})

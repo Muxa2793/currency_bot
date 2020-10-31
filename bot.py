@@ -1,8 +1,8 @@
 import logging
 import settings
 
-from handlers import greet_user, get_currency_price, choose_currency, currency_db_dontknow
-from jobs import get_financial_assets
+from handlers import greet_user, get_currency_price, choose_currency, currency_db_dontknow, add_notifications_settings
+from jobs import get_financial_assets, send_notifications
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, ConversationHandler, CallbackQueryHandler
 from user_settings import user_settings_start, user_settings_dontknow, user_settings_currency, user_settings_set_asset
 
@@ -18,6 +18,7 @@ def main():
 
     jq = mybot.job_queue
     jq.run_repeating(get_financial_assets, interval=60, first=0)
+    jq.run_repeating(send_notifications, interval=5, first=0)
 
     dp = mybot.dispatcher
 
@@ -51,6 +52,7 @@ def main():
     dp.add_handler(user_settings)
     dp.add_handler(currency_db)
     dp.add_handler(CommandHandler("start", greet_user))
+    dp.add_handler(CommandHandler("notifications", add_notifications_settings))
     logging.info("Бот стартовал")
     mybot.start_polling()
     mybot.idle()
