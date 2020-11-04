@@ -6,8 +6,9 @@ from telegram.ext import ConversationHandler
 
 
 def greet_user(update, context):
-    get_or_create_user(db, update.effective_user, update.message.chat.id)
     logging.info('Вызван /start')
+
+    get_or_create_user(db, update.effective_user, update.message.chat.id)
     currency_list = ', '.join(CURRENCY_LIST)
     stocks_list = ', '.join(STOCKS_LIST)
     update.message.reply_text(
@@ -15,7 +16,7 @@ def greet_user(update, context):
       'Это бот, который покажет интересующие тебя курсы валют, '
       'акций и криптовалют.\n\n'
       '/settings - для настройки бота\n\n'
-      '/notifications <валюта> <значение> - для настройки выдачи уведомлений.'
+      '/notice <валюта> <значение> - для настройки выдачи уведомлений.'
       'Например: комманда </notifications USD 75.4> '
       'выдаст вам уведомление если курс валюты станет больше или меньше 75.4 рублей\n\n'
       f'Список доступных валют: {currency_list}\n' 
@@ -66,6 +67,7 @@ def currency_db_dontknow(update, context):
 
 
 def add_notifications_settings(update, context):
+    logging.info('Вызван /notice')
     get_or_create_user(db, update.effective_user, update.message.chat.id)
     user_text = context.args
     currency_list = ', '.join(CURRENCY_LIST)
@@ -81,7 +83,7 @@ def add_notifications_settings(update, context):
         except ValueError:
             update.message.reply_text('Укажите значение валюты как число, например 75.6')
 
-def add_notifications_settings_stoks(update, context):
+def add_notifications_settings_stocks(update, context):
     get_or_create_user(db, update.effective_user, update.message.chat.id)
     user_text = context.args
     stocks_list = ', '.join(STOCKS_LIST)
