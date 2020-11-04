@@ -1,3 +1,4 @@
+import logging
 from db import db, get_or_create_user, create_currency_list
 from settings import CURRENCY_LIST
 from telegram import ReplyKeyboardRemove, InlineKeyboardButton, InlineKeyboardMarkup
@@ -6,6 +7,8 @@ from utils import assets_keyboard, main_keyboard
 
 
 def user_settings_start(update, context):
+    logging.info('Вызван /settings')
+
     get_or_create_user(db, update.effective_user, update.message.chat.id)
     update.message.reply_text('Привет пользователь! Давай настроим твоего бота. Выбери актив, который '
                               'ты хочешь настроить', reply_markup=assets_keyboard())
@@ -26,15 +29,19 @@ def user_settings_set_asset(update, context):
             ],
             [
                 InlineKeyboardButton("CNY", callback_data='CNY'),
-                InlineKeyboardButton("Выйти", callback_data='Выйти')
+                InlineKeyboardButton("Закончить", callback_data='Закончить')
             ]
         ]
         currency_keyboard = InlineKeyboardMarkup(keyboard)
-        update.message.reply_text('Выберете валюту:', reply_markup=currency_keyboard)
+        update.message.reply_text('Выберете валюту или нажмите закончить', reply_markup=currency_keyboard)
         context.user_data['asset'] = {'currency': []}
+        user_text = update.message.text
         return 'currency'
     elif user_text == 'Акции':
         update.message.reply_text('Вы выбрали акции')
+    elif user_text == 'Выйти':
+        update.message.reply_text("Настройка завершена", reply_markup=main_keyboard())
+        return ConversationHandler.END
 
 
 def user_settings_currency(update, context):
@@ -47,13 +54,13 @@ def user_settings_currency(update, context):
                                      reply_markup=ReplyKeyboardRemove())
             user_currency_list = context.user_data['asset']['currency']
             create_currency_list(db, update.effective_user, user_currency_list)
-        elif query.data == 'Выйти':
+        elif query.data == 'Закончить':
             if context.user_data['asset']['currency'] == []:
                 query.message.reply_text("Вы не добавили ни одной валюты, пожалуйста выберите валюту",
                                          reply_markup=ReplyKeyboardRemove())
             else:
-                query.message.reply_text("Настройка завершена", reply_markup=main_keyboard())
-                return ConversationHandler.END
+                query.message.reply_text("Настройка завершена", reply_markup=assets_keyboard())
+                return 'set_asset'
     else:
         query.message.reply_text(f"Валюта {query.data} уже есть в списке, выберете другую")
 

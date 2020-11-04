@@ -61,12 +61,15 @@ def get_financial_stocks(db, date, price, asset):
 
 def get_user_currency_keyboard(db, effective_user):
     user = db.users.find_one({'user_id': effective_user.id})
-    return user['currency_list']
+    try:
+        return user['currency_list']
+    except KeyError:
+        default_keyboard = ['USD', 'EUR']
+        return default_keyboard
 
 
 def find_currency_value(db, asset):
-    currency_db = db.currency.find_one({"currency": asset})
-    return currency_db
+    return db.currency.find_one({"currency": asset})
 
 
 def create_notifications_settings(db, effective_user, asset, value):
@@ -74,4 +77,17 @@ def create_notifications_settings(db, effective_user, asset, value):
     if user:
         db.users.update_one(
             {'_id': user['_id']},
-            {'$set': {'notification_settings': {'asset': f'{asset}RUB=X', 'notification_value': value}}})
+            {'$set': {'notificate': True,
+                      'notification_settings': {'asset': asset, 'notification_value': value}}})
+
+
+def get_notificated_user(db):
+    return db.users.find({"notificate": True})
+
+
+def stop_notifications(db, chat_id):
+    user = db.users.find_one({'user_id': chat_id})
+    if user:
+        db.users.update_one(
+            {'_id': user['_id']},
+            {'$set': {'notificate': False}})

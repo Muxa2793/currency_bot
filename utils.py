@@ -5,12 +5,12 @@ from db import db, get_user_currency_keyboard
 def main_keyboard():
     return ReplyKeyboardMarkup([
                                 ['/stoks', 'Валюта', "/crypto"],
-                                ['/start']], resize_keyboard=True)
+                                ['/start', '/settings']], resize_keyboard=True)
 
 
 def assets_keyboard():
     return ReplyKeyboardMarkup([
-                                ['Валюта', 'Акции', "Криптовалюта"]], resize_keyboard=True)
+                                ['Валюта', 'Акции', "Криптовалюта", "Выйти"]], resize_keyboard=True)
 
 
 def user_currency_keyboard(update):

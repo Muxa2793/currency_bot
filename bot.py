@@ -10,7 +10,8 @@ PROXY = {'proxy_url': settings.PROXY_URL, 'urllib3_proxy_kwargs': {
                                 'username': settings.PROXY_USERNAME,
                                 'password': settings.PROXY_PASSWORD}}
 
-logging.basicConfig(filename='bot.log', level=logging.INFO)
+logging.basicConfig(filename='bot.log', filemode='w', format='%(asctime)s - %(message)s', level=logging.INFO,
+                    datefmt='%d-%m-%y %H:%M:%S')
 
 
 def main():
@@ -52,7 +53,7 @@ def main():
     dp.add_handler(user_settings)
     dp.add_handler(currency_db)
     dp.add_handler(CommandHandler("start", greet_user))
-    dp.add_handler(CommandHandler("notifications", add_notifications_settings))
+    dp.add_handler(CommandHandler("notice", add_notifications_settings))
     logging.info("Бот стартовал")
     mybot.start_polling()
     mybot.idle()
