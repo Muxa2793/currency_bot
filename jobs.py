@@ -1,7 +1,7 @@
 from datetime import datetime
 from db import (db, get_financial_currency, get_financial_stocks, get_notificated_user, find_currency_value,
                 stop_notifications)
-from settings import CURRENCY_LIST
+from settings import CURRENCY_LIST, STOCKS_LIST
 from telegram.error import BadRequest
 
 import time
@@ -10,24 +10,19 @@ import yfinance as yf
 
 def get_financial_assets(context):
     date_str = datetime.now().strftime("%d.%m.%Y %H:%M:%S")
-    financial_assets = {'currency': CURRENCY_LIST, 'stock': ['YNDX']}
-    for assets in financial_assets:
-        if assets == 'currency':
-            for asset in financial_assets['currency']:
-                get_financial_currency(db, date_str, get_yahoo_finance_currency(asset), asset)
-        elif assets == 'stock':
-            for asset in financial_assets['stock']:
-                get_financial_stocks(db, date_str, get_yahoo_finance_stock(asset), asset)
+    financial_assets = {'currency': CURRENCY_LIST, 'stock': STOCKS_LIST}
+    for asset in financial_assets.get('currency', []):
+        get_financial_currency(db, date_str, get_yahoo_finance_currency(asset), asset)
+    for asset in financial_assets.get('stock', []):
+        get_financial_stocks(db, date_str, get_yahoo_finance_stock(asset), asset)
 
 
 def get_yahoo_finance_currency(asset):
-    price = yf.download(f'{asset}RUB=X', datetime.now())['Close'][-1]
-    return price
+    return yf.download(f'{asset}RUB=X', datetime.now())['Close'][-1]
 
 
 def get_yahoo_finance_stock(asset):
-    price = yf.download(asset, datetime.now())['Close'][-1]
-    return price
+    return yf.download(asset, datetime.now())['Close'][-1]
 
 
 def send_notifications(context):
