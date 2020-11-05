@@ -10,16 +10,16 @@ currency_bot - это бот для Telegram, предназначенный д�
 4. Установите зависимости `pip install -r requirements.txt`
 5. Создайте файл `settings.py`
 6. Впишите в settings.py переменные:
-```
+```python
 API_KEY = "API-ключ бота"
 PROXY_URL = "Адрес прокси"
 PROXY_USERNAME = "Логин на прокси"
 PROXY_PASSWORD = "Пароль на прокси"
 
-CURRENCY_LIST = ['USD', 'EUR', 'JPY', 'GBP', 'CNY']       # 
-STOCKS_LIST = ['MSFT', 'YNDX', 'TSLA', 'INTC', 'SBER.ME'] # список 
+CURRENCY_LIST = ['USD', 'EUR', 'JPY', 'GBP', 'CNY']       # список можно изменить на свой
+STOCKS_LIST = ['MSFT', 'YNDX', 'TSLA', 'INTC', 'SBER.ME'] # список можно изменить на свой
 ```
-    *Список [валют](https://finance.yahoo.com/most-active);
+    *Список [валют](https://finance.yahoo.com/most-active)
     *Список [акций](https://finance.yahoo.com/currencies)
 
 7. Запустите бота командой `python3 bot.py` 
