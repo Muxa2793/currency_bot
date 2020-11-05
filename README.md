@@ -2,7 +2,7 @@
 
 currency_bot - это бот для Telegram, предназначенный для отображения курса валют и акций.
 
-## Установка
+## Установка бота
 
 1. Создайте нового бота. Инструкция по созданию бота с помощью [BotFather](https://medium.com/@bbsystemscorporation/инструкция-по-работе-с-botfather-ботом-5c6f74d99a1a)
 2. Клонируйте репозиторий с github
@@ -16,9 +16,17 @@ PROXY_URL = "Адрес прокси"
 PROXY_USERNAME = "Логин на прокси"
 PROXY_PASSWORD = "Пароль на прокси"
 
-CURRENCY_LIST = ['USD', 'EUR', 'JPY', 'GBP', 'CNY']       # список валют можно изменить и взять с сайта https://finance.yahoo.com
-STOCKS_LIST = ['MSFT', 'YNDX', 'TSLA', 'INTC', 'SBER.ME'] # список акций можно изменить и взять с сайта https://finance.yahoo.com
+CURRENCY_LIST = ['USD', 'EUR', 'JPY', 'GBP', 'CNY']       # список [валют](https://finance.yahoo.com/most-active)
+STOCKS_LIST = ['MSFT', 'YNDX', 'TSLA', 'INTC', 'SBER.ME'] # список [акций](https://finance.yahoo.com/currencies)
 ```
+7. Запустите бота командой `python3 bot.py` 
 
-7. Запустите бота командой `python3 bot.py`
-8. Найдите бота в telegram и Напишите команду `/start`
+## Установка базы данных
+1. Создайте базу данных в MongoDB
+2. Добавьте в `settings.py` переменные:
+```
+MONGO_LINK = 'Ссылка на базу данных'
+MONGO_DB = 'Название базы данных'
+```
+## Запуск
+1. Найдите вашего бота в telegram и Напишите команду `/start`
