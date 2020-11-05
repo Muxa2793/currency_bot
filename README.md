@@ -19,8 +19,8 @@ PROXY_PASSWORD = "Пароль на прокси"
 CURRENCY_LIST = ['USD', 'EUR', 'JPY', 'GBP', 'CNY']       # список можно изменить на свой
 STOCKS_LIST = ['MSFT', 'YNDX', 'TSLA', 'INTC', 'SBER.ME'] # список можно изменить на свой
 ```
-   - ***Список [валют](https://finance.yahoo.com/most-active)
-   - ***Список [акций](https://finance.yahoo.com/currencies)
+   - ***Список [валют](https://finance.yahoo.com/most-active)***
+   - ***Список [акций](https://finance.yahoo.com/currencies)***
 
 7. Запустите бота командой `python3 bot.py` 
 
