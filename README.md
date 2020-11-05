@@ -15,8 +15,8 @@ PROXY_URL = "Адрес прокси"
 PROXY_USERNAME = "Логин на прокси"
 PROXY_PASSWORD = "Пароль на прокси"
 
-CURRENCY_LIST = ['USD', 'EUR', 'JPY', 'GBP', 'CNY'] - список валют можно изменить и взять с сайта https://finance.yahoo.com
-STOCKS_LIST = ['MSFT', 'YNDX', 'TSLA', 'INTC', 'SBER.ME'] - список акций можно изменить и взять с сайта https://finance.yahoo.com
+CURRENCY_LIST = ['USD', 'EUR', 'JPY', 'GBP', 'CNY']       # список валют можно изменить и взять с сайта https://finance.yahoo.com
+STOCKS_LIST = ['MSFT', 'YNDX', 'TSLA', 'INTC', 'SBER.ME'] # список акций можно изменить и взять с сайта https://finance.yahoo.com
 ```
 
 6. Запустите бота командой `python3 bot.py`
