@@ -45,14 +45,14 @@ def check_value(context, user):
     if currency_db['value'] > user_currency_value:
         while currency_db['value'] > user_currency_value:
             currency_db = find_currency_value(db, currency)
-            time.sleep(60)
+            time.sleep(20)
         text = f'{currency} стал меньше {user_currency_value} руб.'
         stop_notifications(db, user['chat_id'])
         return context.bot.send_message(chat_id=user['chat_id'], text=text)
-    if currency_db['value'] < user_currency_value:
+    elif currency_db['value'] < user_currency_value:
         while currency_db['value'] < user_currency_value:
             currency_db = find_currency_value(db, currency)
-            time.sleep(5)
+            time.sleep(20)
         text = f'{currency} стал больше {user_currency_value} руб.'
         stop_notifications(db, user['chat_id'])
         return context.bot.send_message(chat_id=user['chat_id'], text=text)

@@ -1,7 +1,7 @@
 import logging
 from db import db, get_or_create_user, find_currency_value, create_notifications_settings
 from utils import main_keyboard, user_currency_keyboard
-from settings import CURRENCY_LIST
+from settings import CURRENCY_LIST, STOCKS_LIST
 from telegram.ext import ConversationHandler
 
 
@@ -53,14 +53,25 @@ def add_notifications_settings(update, context):
     get_or_create_user(db, update.effective_user, update.message.chat.id)
     user_text = context.args
     currency_list = ', '.join(CURRENCY_LIST)
+    stocks_list = ', '.join(STOCKS_LIST)
     asset = user_text[0].upper()
     value = user_text[1]
-    if asset not in CURRENCY_LIST:
-        update.message.reply_text(f'Такой валюты нет. Пожалуйста введите валюту из списка: {currency_list}')
-    elif value:
-        try:
-            value = float(value.replace(',', '.'))
-            create_notifications_settings(db, update.effective_user, asset, value)
-            update.message.reply_text(f'Если {asset} станет больше или меньше {value} руб., вам придёт уведомление.')
-        except ValueError:
-            update.message.reply_text('Укажите значение валюты как число, например 75.6')
+    if asset not in CURRENCY_LIST and asset not in STOCKS_LIST:
+        update.message.reply_text('Такого актива нет. Пожалуйста выберите актив из списка:\n'
+                                  f'Валюта: {currency_list}\n'
+                                  f'Акции: {stocks_list}')
+    elif asset in CURRENCY_LIST:
+        sign = 'руб.'
+        set_notice(asset, value, update, sign)
+    elif asset in STOCKS_LIST:
+        sign = '$'
+        set_notice(asset, value, update, sign)
+
+
+def set_notice(asset, value, update, sign):
+    try:
+        value = float(value.replace(',', '.'))
+        create_notifications_settings(db, update.effective_user, asset, value)
+        update.message.reply_text(f'Если {asset} станет больше или меньше {value} {sign}, вам придёт уведомление.')
+    except ValueError:
+        update.message.reply_text('Укажите значение валюты как число, например 80.6')

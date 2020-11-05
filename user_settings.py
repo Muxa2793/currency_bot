@@ -34,7 +34,7 @@ def user_settings_set_asset(update, context):
         ]
         currency_keyboard = InlineKeyboardMarkup(keyboard)
         update.message.reply_text('Выберете валюту или нажмите закончить', reply_markup=currency_keyboard)
-        context.user_data['asset'] = {'currency': []}
+        context.user_data['currency'] = []
         user_text = update.message.text
         return 'currency'
     elif user_text == 'Акции':
@@ -47,15 +47,15 @@ def user_settings_set_asset(update, context):
 def user_settings_currency(update, context):
     query = update.callback_query
     query.answer()
-    if query.data not in context.user_data['asset']['currency']:
+    if query.data not in context.user_data['currency']:
         if query.data in CURRENCY_LIST:
-            context.user_data['asset']['currency'].append(query.data)
+            context.user_data['currency'].append(query.data)
             query.message.reply_text(f"Валюта {query.data} добавлена в ваш список валют",
                                      reply_markup=ReplyKeyboardRemove())
-            user_currency_list = context.user_data['asset']['currency']
+            user_currency_list = context.user_data['currency']
             create_currency_list(db, update.effective_user, user_currency_list)
         elif query.data == 'Закончить':
-            if context.user_data['asset']['currency'] == []:
+            if context.user_data['currency'] == []:
                 query.message.reply_text("Вы не добавили ни одной валюты, пожалуйста выберите валюту",
                                          reply_markup=ReplyKeyboardRemove())
             else:
