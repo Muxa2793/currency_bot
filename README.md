@@ -25,6 +25,7 @@ CRYPTO_LIST = ['BTC', 'ETH', 'XMR', 'BCH', 'LTC']         # список мож�
       
    - ***Список доступных валют на [yahoofinance](https://finance.yahoo.com/most-active)***
    - ***Список доступных акций на [yahoofinance](https://finance.yahoo.com/currencies)***
+   - ***Список доступной криптовалюты на [yahoofinance](https://finance.yahoo.com/cryptocurrencies)***
 
 7. Запустите бота командой `python3 bot.py` 
 
