@@ -130,13 +130,13 @@ def find_crypto_value(db, asset):
     return db.crypto.find_one({"crypto": asset})
 
 
-def create_notifications_settings(db, effective_user, asset, value):
+def create_notifications_settings(db, effective_user, condition, asset, value):
     user = db.users.find_one({'user_id': effective_user.id})
     if user:
         db.users.update_one(
             {'_id': user['_id']},
             {'$set': {'notificate': True,
-                      'notification_settings': {'asset': asset, 'notification_value': value}}})
+                      'notification_settings': {'condition': condition, 'asset': asset, 'notification_value': value}}})
 
 
 def get_notificated_user(db):

@@ -76,7 +76,7 @@ def user_settings_set_asset(update, context):
         update.message.reply_text('Выберете криптовалюты или нажмите закончить', reply_markup=crypto_keyboard)
         context.user_data['crypto'] = []
         user_text = update.message.text
-        return 'crypto'        
+        return 'crypto'
     elif user_text == 'Выйти':
         update.message.reply_text("Настройка завершена", reply_markup=main_keyboard())
         return ConversationHandler.END

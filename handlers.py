@@ -2,7 +2,7 @@ import logging
 from db import (db, get_or_create_user, find_currency_value, find_stocks_value, find_crypto_value,
                 create_notifications_settings)
 from utils import (main_keyboard, user_currency_keyboard, user_stocks_keyboard,
-                    user_crypto_keyboard)
+                   user_crypto_keyboard)
 from settings import CURRENCY_LIST, STOCKS_LIST, CRYPTO_LIST
 from telegram.ext import ConversationHandler
 
@@ -24,7 +24,7 @@ def greet_user(update, context):
       'выдаст вам уведомление если курс валюты станет больше или меньше 75.4 рублей\n\n'
       f'Список доступных валют: {currency_list}\n'
       f'Список доступных акций: {stocks_list}\n'
-      f'Список доступных криптовалют: {crypto_list}',      
+      f'Список доступных криптовалют: {crypto_list}',
       reply_markup=main_keyboard()
     )
 
@@ -103,23 +103,35 @@ def add_notifications_settings(update, context):
     crypto_list = ', '.join(CRYPTO_LIST)
     asset = user_text[0].upper()
     value = user_text[1]
+    value = float(value.replace(',', '.'))
     if asset not in CURRENCY_LIST and asset not in STOCKS_LIST and asset not in CRYPTO_LIST:
         update.message.reply_text('Такого актива нет. Пожалуйста выберите актив из списка:\n'
                                   f'Валюта: {currency_list}\n'
                                   f'Акции: {stocks_list}\n'
                                   f'Криптовалюта: {crypto_list}')
     elif asset in CURRENCY_LIST:
+        asset_db = find_currency_value(db, asset)
+        asset_db_value = asset_db['value']
         sign = 'руб.'
-        set_notice(asset, value, update, sign)
-    elif asset in STOCKS_LIST or asset in CRYPTO_LIST :
+    elif asset in STOCKS_LIST:
+        asset_db = find_stocks_value(db, asset)
+        asset_db_value = asset_db['value']
         sign = '$'
-        set_notice(asset, value, update, sign)
+    elif asset in CRYPTO_LIST:
+        asset_db = find_crypto_value(db, asset)
+        asset_db_value = asset_db['value']
+        sign = '$'
+    if value > asset_db_value:
+        condition = 'bigger'
+        set_notice(asset, value, update, sign, condition)
+    elif value < asset_db_value:
+        condition = 'smaller'
+        set_notice(asset, value, update, sign, condition)
 
 
-def set_notice(asset, value, update, sign):
+def set_notice(asset, value, update, sign, condition):
     try:
-        value = float(value.replace(',', '.'))
-        create_notifications_settings(db, update.effective_user, asset, value)
+        create_notifications_settings(db, update.effective_user, condition, asset, value)
         update.message.reply_text(f'Если {asset} станет больше или меньше {value} {sign}, вам придёт уведомление.')
     except ValueError:
         update.message.reply_text('Укажите стоимость актива как число, например 80.6')

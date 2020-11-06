@@ -19,7 +19,7 @@ PROXY_USERNAME = "Логин на прокси"
 PROXY_PASSWORD = "Пароль на прокси"
 
 CURRENCY_LIST = ['USD', 'EUR', 'JPY', 'GBP', 'CNY']       # список можно изменить на свой
-STOCKS_LIST = ['MSFT', 'YNDX', 'TSLA', 'INTC', 'SBER.ME'] # список можно изменить на свой
+STOCKS_LIST = ['MSFT', 'YNDX', 'TSLA', 'INTC', 'AAPL']    # список можно изменить на свой
 CRYPTO_LIST = ['BTC', 'ETH', 'XMR', 'BCH', 'LTC']         # список можно изменить на свой
 ```
       

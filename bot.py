@@ -23,6 +23,8 @@ def main():
 
     dp = mybot.dispatcher
 
+    dp.add_handler(CommandHandler("notice", add_notifications_settings))
+
     USER_SETTINGS
     CURRENCY_DB
     STOCKS_DB
@@ -33,7 +35,6 @@ def main():
     dp.add_handler(STOCKS_DB)
     dp.add_handler(CRYPTO_DB)
     dp.add_handler(CommandHandler("start", greet_user))
-    dp.add_handler(CommandHandler("notice", add_notifications_settings))
     logging.info("Бот стартовал")
     mybot.start_polling()
     mybot.idle()

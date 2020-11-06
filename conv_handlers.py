@@ -1,9 +1,9 @@
 from handlers import (get_currency_price, choose_currency, get_stocks_price, choose_stocks,
-                        get_crypto_price, choose_crypto, currency_db_dontknow)
+                      get_crypto_price, choose_crypto, currency_db_dontknow)
 from telegram.ext import (CommandHandler, MessageHandler, Filters, ConversationHandler,
-                            CallbackQueryHandler)
+                          CallbackQueryHandler)
 from user_settings import (user_settings_start, user_settings_dontknow, user_settings_currency,
-                            user_settings_stocks, user_settings_crypto, user_settings_set_asset)
+                           user_settings_stocks, user_settings_crypto, user_settings_set_asset)
 
 USER_SETTINGS = ConversationHandler(
     entry_points=[
