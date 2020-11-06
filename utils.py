@@ -1,5 +1,5 @@
 from telegram import ReplyKeyboardMarkup
-from db import db, get_user_currency_keyboard, get_user_stocks_keyboard
+from db import db, get_user_currency_keyboard, get_user_stocks_keyboard, get_user_crypto_keyboard
 
 
 def main_keyboard():
@@ -19,8 +19,16 @@ def user_currency_keyboard(update):
                                 keyboard,
                                 ['Вернуться']], resize_keyboard=True)
 
+
 def user_stocks_keyboard(update):
     keyboard = get_user_stocks_keyboard(db, update.effective_user)
     return ReplyKeyboardMarkup([
                                 keyboard,
                                 ['Вернуться']], resize_keyboard=True)
+
+
+def user_crypto_keyboard(update):
+    keyboard = get_user_crypto_keyboard(db, update.effective_user)
+    return ReplyKeyboardMarkup([
+                                keyboard,
+                                ['Вернуться']], resize_keyboard=True)                               
