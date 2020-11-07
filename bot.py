@@ -25,11 +25,6 @@ def main():
 
     dp.add_handler(CommandHandler("notice", add_notifications_settings))
 
-    USER_SETTINGS
-    CURRENCY_DB
-    STOCKS_DB
-    CRYPTO_DB
-
     dp.add_handler(USER_SETTINGS)
     dp.add_handler(CURRENCY_DB)
     dp.add_handler(STOCKS_DB)
