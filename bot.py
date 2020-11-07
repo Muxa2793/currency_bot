@@ -34,7 +34,9 @@ def main():
     dp.add_handler(CURRENCY_DB)
     dp.add_handler(STOCKS_DB)
     dp.add_handler(CRYPTO_DB)
+
     dp.add_handler(CommandHandler("start", greet_user))
+    dp.add_handler(CommandHandler("notice", add_notifications_settings))
     logging.info("Бот стартовал")
     mybot.start_polling()
     mybot.idle()
