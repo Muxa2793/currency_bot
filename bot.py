@@ -1,7 +1,7 @@
 import logging
 import settings
 
-from conv_handlers import USER_SETTINGS, CURRENCY_DB
+from conv_handlers import USER_SETTINGS, CURRENCY_DB, STOCKS_DB, CRYPTO_DB
 from handlers import greet_user, add_notifications_settings
 from jobs import get_financial_assets, send_notifications
 from telegram.ext import Updater, CommandHandler
@@ -23,11 +23,18 @@ def main():
 
     dp = mybot.dispatcher
 
+    dp.add_handler(CommandHandler("notice", add_notifications_settings))
+
     USER_SETTINGS
     CURRENCY_DB
+    STOCKS_DB
+    CRYPTO_DB
 
     dp.add_handler(USER_SETTINGS)
     dp.add_handler(CURRENCY_DB)
+    dp.add_handler(STOCKS_DB)
+    dp.add_handler(CRYPTO_DB)
+
     dp.add_handler(CommandHandler("start", greet_user))
     dp.add_handler(CommandHandler("notice", add_notifications_settings))
     logging.info("Бот стартовал")
